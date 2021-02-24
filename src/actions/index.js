@@ -4,8 +4,15 @@ import jsonPlaceholder from '../apis/jsonPlaceholder';
 // 2nd way to 'memoize' through additional action
 export const fetchPostsAndUsers = () => async (dispatch, getState) => {
 	await dispatch(fetchPosts());
-	const userIds = _.uniq(_.map(getState().posts, 'userId'));
-	userIds.forEach((id) => dispatch(fetchUser(id)));
+	// const userIds = _.uniq(_.map(getState().posts, 'userId'));
+	// userIds.forEach((id) => dispatch(fetchUser(id)));
+
+	// refactor of the above 2 commented lines
+	_.chain(getState().posts)
+		.map('userId')
+		.uniq()
+		.forEach((id) => dispatch(fetchUser(id)))
+		.value();
 };
 
 export const fetchPosts = () => async (dispatch) => {
